@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useMsal, AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import { UserProvider, useUser } from './context/UserContext';
@@ -133,7 +133,7 @@ function App() {
   const { instance } = useMsal();
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AuthenticatedTemplate>
         <UserProvider>
           <Toaster position="top-right" />
@@ -144,7 +144,7 @@ function App() {
       <UnauthenticatedTemplate>
         <LoginPage onSignIn={() => instance.loginPopup({ scopes: ["Sites.ReadWrite.All"] })} />
       </UnauthenticatedTemplate>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
