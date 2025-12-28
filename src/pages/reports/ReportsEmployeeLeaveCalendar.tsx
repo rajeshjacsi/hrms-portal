@@ -94,7 +94,7 @@ export const ReportsEmployeeLeaveCalendar: React.FC = () => {
 
         // Add empty cells for days from previous month
         for (let i = 0; i < firstDay; i++) {
-            days.push(<div key={`empty-${monthIndex}-${i}`} className="h-8 w-8"></div>);
+            days.push(<div key={`empty-${monthIndex}-${i}`} className="h-5 w-5"></div>);
         }
 
         // Add days of the month
@@ -103,7 +103,7 @@ export const ReportsEmployeeLeaveCalendar: React.FC = () => {
             days.push(
                 <div
                     key={`${monthIndex}-${d}`}
-                    className={`h-8 w-8 flex items-center justify-center rounded-full text-[10px] font-bold transition-all duration-300 hover:scale-110 cursor-default ${colorClass}`}
+                    className={`h-5 w-5 flex items-center justify-center rounded-full text-[10px] font-bold transition-all duration-200 hover:scale-110 cursor-default ${colorClass}`}
                     title={attendanceData.find(r => r.date === `${d.toString().padStart(2, '0')}/${(monthIndex + 1).toString().padStart(2, '0')}/${selectedYear}`)?.status || 'No Record'}
                 >
                     {d}
@@ -111,14 +111,21 @@ export const ReportsEmployeeLeaveCalendar: React.FC = () => {
             );
         }
 
+        // Fill remaining cells to complete 6 rows (42 cells total)
+        const totalCells = firstDay + daysInMonth;
+        const cellsNeeded = 42; // 6 rows × 7 columns
+        for (let i = totalCells; i < cellsNeeded; i++) {
+            days.push(<div key={`empty-end-${monthIndex}-${i}`} className="h-5 w-5"></div>);
+        }
+
         return (
-            <div key={monthIndex} className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-4 border border-white/20 hover:shadow-2xl transition-all duration-500 group">
-                <h3 className="text-center font-bold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors uppercase tracking-widest text-xs">
+            <div key={monthIndex} className="bg-white/80 backdrop-blur-md rounded-xl shadow-lg p-2 border border-white/20 hover:shadow-xl transition-all duration-300 group">
+                <h3 className="text-center font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors uppercase tracking-wide text-xs">
                     {months[monthIndex]}
                 </h3>
-                <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                <div className="grid grid-cols-7 gap-1 text-center mb-1">
                     {dayNames.map(name => (
-                        <div key={name} className="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">
+                        <div key={name} className="text-[9px] font-bold text-gray-400 uppercase">
                             {name}
                         </div>
                     ))}
@@ -126,65 +133,52 @@ export const ReportsEmployeeLeaveCalendar: React.FC = () => {
                 <div className="grid grid-cols-7 gap-1">
                     {days}
                 </div>
-            </div>
+            </div >
         );
     };
 
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 p-6 space-y-6">
-            {/* Header / Controls */}
-            <div className="relative group overflow-hidden bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/40 p-6 transition-all duration-500 hover:shadow-indigo-200/50">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl -mr-32 -mt-32 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-200/20 rounded-full blur-3xl -ml-32 -mb-32 animate-pulse delay-1000"></div>
-
-                <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 animate-bounce-slow">
-                            <FaCalendarAlt className="text-white text-xl" />
+        <div className="flex-1 flex flex-col h-full bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 overflow-hidden">
+            {/* Compact Header */}
+            <div className="shrink-0 bg-white/70 backdrop-blur-sm border-b border-gray-200 px-4 py-1">
+                <div className="flex items-center justify-between max-w-[1800px] mx-auto">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <FaCalendarAlt className="text-white text-sm" />
                         </div>
-                        <div>
-                            <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-800 to-purple-800">
-                                Employee Leave Calendar
-                            </h1>
-                            <p className="text-gray-500 text-sm font-medium">Yearly attendance overview and status tracking</p>
-                        </div>
+                        <h1 className="text-lg font-bold text-gray-800">Employee Leave Calendar</h1>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-4">
-                        {/* Employee Select */}
-                        <div className="relative w-full md:w-64 group/select">
-                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500 z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-indigo-500 text-sm">
                                 <FaUser />
                             </div>
                             <select
                                 value={selectedEmployee}
                                 onChange={(e) => setSelectedEmployee(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/80 border border-gray-100 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all appearance-none font-semibold text-gray-700 cursor-pointer"
+                                className="pl-8 pr-3 py-1.5 text-sm bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none"
                                 disabled={fetchingEmployees}
                             >
                                 {fetchingEmployees ? (
-                                    <option>Loading employees...</option>
+                                    <option>Loading...</option>
                                 ) : (
                                     employees.map(emp => (
                                         <option key={emp.id} value={emp.id}>{emp.name}</option>
                                     ))
                                 )}
                             </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                <ChevronDownIcon className="w-4 h-4" />
-                            </div>
                         </div>
 
-                        {/* Year Select */}
-                        <div className="flex bg-white/80 rounded-2xl p-1 border border-gray-100 shadow-sm overflow-hidden">
+                        <div className="flex bg-white border border-gray-200 rounded-lg p-0.5">
                             {years.map(year => (
                                 <button
                                     key={year}
                                     onClick={() => setSelectedYear(year)}
-                                    className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${selectedYear === year
-                                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md transform scale-105'
-                                        : 'text-gray-400 hover:text-indigo-600'
+                                    className={`px-3 py-1 rounded text-sm font-semibold transition-all ${selectedYear === year
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'text-gray-600 hover:text-indigo-600'
                                         }`}
                                 >
                                     {year}
@@ -192,48 +186,36 @@ export const ReportsEmployeeLeaveCalendar: React.FC = () => {
                             ))}
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex gap-2">
-                            <button
-                                onClick={fetchAttendance}
-                                className="p-3 bg-white/80 hover:bg-white text-indigo-600 rounded-2xl border border-gray-100 shadow-sm transition-all hover:scale-110 active:scale-95"
-                                title="Refresh Data"
-                            >
-                                <FaSync className={loading ? 'animate-spin' : ''} />
-                            </button>
-                        </div>
+                        <button
+                            onClick={fetchAttendance}
+                            className="p-1.5 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-gray-50 transition-all"
+                            title="Refresh"
+                        >
+                            <FaSync className={`text-sm ${loading ? 'animate-spin' : ''}`} />
+                        </button>
                     </div>
                 </div>
             </div>
 
-            {/* Calendar Grid */}
-            <div className="relative">
-                {loading && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/20 backdrop-blur-[2px] rounded-3xl">
-                        <div className="bg-white/80 p-6 rounded-3xl shadow-2xl border border-white flex flex-col items-center gap-4">
-                            <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-                            <p className="text-indigo-900 font-bold animate-pulse">Fetching Attendance Records...</p>
-                        </div>
-                    </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* Calendar Grid - Fit to screen, no scroll */}
+            <div className="flex-1 min-h-0 flex items-center justify-center p-1 overflow-hidden">
+                <div className="grid grid-cols-4 gap-3 max-w-[1600px] w-full mx-auto">
                     {months.map((_, index) => renderMonth(index))}
                 </div>
             </div>
 
-            {/* Legend & Summary */}
-            <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-xl border border-white/40 p-6">
-                <div className="flex flex-wrap justify-center gap-8">
+            {/* Legend - Fixed at bottom */}
+            <div className="shrink-0 bg-white/70 backdrop-blur-sm border-t border-gray-200 px-4 py-1">
+                <div className="flex flex-wrap justify-center gap-3 max-w-[1800px] mx-auto">
                     <LegendItem color="bg-green-500" label="Present" count={attendanceData.filter(r => ['in', 'present'].includes(r.status.toLowerCase())).length} />
                     <LegendItem color="bg-red-500" label="Absent" count={attendanceData.filter(r => r.status.toLowerCase().includes('absent')).length} />
                     <LegendItem color="bg-orange-500" label="Halfday" count={attendanceData.filter(r => r.status.toLowerCase().includes('half')).length} />
                     <LegendItem color="bg-blue-600" label="Holiday" count={attendanceData.filter(r => r.status.toLowerCase().includes('holiday')).length} />
                     <LegendItem color="bg-purple-500" label="Leave" count={attendanceData.filter(r => r.status.toLowerCase().includes('leave')).length} />
-                    <LegendItem color="bg-gray-100 border border-gray-200" label="No Record" text="text-gray-400" />
+                    <LegendItem color="bg-gray-200 border border-gray-300" label="No Record" text="text-gray-500" />
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 
@@ -250,8 +232,4 @@ const LegendItem: React.FC<{ color: string, label: string, count?: number, text?
     </div>
 );
 
-const ChevronDownIcon = ({ className }: { className: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className={className}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-    </svg>
-);
+

@@ -273,7 +273,9 @@ export const Employees: React.FC = () => {
                                                 ) : (
                                                     <button onClick={() => setEmployeeToDisable(employee)} className="text-gray-400 hover:text-orange-600 p-1" title="Disable User"><FaBan size={12} /></button>
                                                 )}
-                                                <button onClick={() => setEmployeeToDelete(employee)} className="text-gray-400 hover:text-red-600 p-1"><FaTrash size={12} /></button>
+                                                {permissionLevel === 'Admin' && (
+                                                    <button onClick={() => setEmployeeToDelete(employee)} className="text-gray-400 hover:text-red-600 p-1"><FaTrash size={12} /></button>
+                                                )}
                                             </div>
                                             <p className="text-sm text-gray-500 truncate font-medium">{employee.role} &bull; {employee.department}</p>
                                         </div>

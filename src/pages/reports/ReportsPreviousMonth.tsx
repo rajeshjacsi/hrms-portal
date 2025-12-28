@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { FaFolder, FaArrowLeft, FaCalendarAlt } from 'react-icons/fa';
+import { FaFolder, FaArrowLeft, FaFileExcel } from 'react-icons/fa';
 import { NotificationModal } from '../../components/NotificationModal';
 
 export const ReportsPreviousMonth = () => {
-    // Ascending order as requested: 2023 -> 2025
+    // Ascending order as requested: 2024 -> 2027
     const years = ['2024', '2025', '2026', '2027'];
     const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
@@ -30,12 +30,31 @@ export const ReportsPreviousMonth = () => {
     };
 
     const handleMonthClick = (month: string) => {
-        // Future: Navigate to actual report for that month/year
+        if (!selectedYear) return;
+
+        // Construct SharePoint Download URL
+        // Path format: /sites/EmployeesDOB/Records/<Year>/<01.Month>.xlsx
+        const siteUrl = "https://jmtechtalent.sharepoint.com/sites/EmployeesDOB";
+        const folderPath = `/sites/EmployeesDOB/Records/${selectedYear}`;
+
+        // Calculate month index (0-11) and add 1 for 1-12 range, then pad with 0
+        const monthIndex = months.indexOf(month);
+        const monthPrefix = (monthIndex + 1).toString().padStart(2, '0');
+        const fileName = `${monthPrefix}.${month}.xlsx`;
+
+        const fileRelativeUrl = `${folderPath}/${fileName}`;
+
+        // Final Download URL
+        const downloadUrl = `${siteUrl}/_layouts/15/download.aspx?SourceUrl=${encodeURIComponent(fileRelativeUrl)}`;
+
+        // Trigger download
+        window.open(downloadUrl, '_blank');
+
         setNotification({
             isOpen: true,
             type: 'success',
-            title: 'Feature Coming Soon',
-            message: `Opening report for ${month} ${selectedYear} (Feature coming soon)`
+            title: 'Download Started',
+            message: `Downloading attendance report for ${month} ${selectedYear}...`
         });
     };
 
@@ -64,7 +83,7 @@ export const ReportsPreviousMonth = () => {
                     </h1>
                     <p className="text-gray-500 mt-1">
                         {selectedYear
-                            ? `Viewing monthly archives for ${selectedYear}`
+                            ? `Download monthly attendance report for ${selectedYear}`
                             : 'Select a year to view archived attendance reports.'}
                     </p>
                 </div>
@@ -92,20 +111,20 @@ export const ReportsPreviousMonth = () => {
                         ))}
                     </div>
                 ) : (
-                    // MONTH SELECTION VIEW (Landing Page for Year)
+                    // MONTH SELECTION VIEW (Excel Downloads)
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 animate-in fade-in zoom-in-95 duration-300">
                         {months.map((month) => (
                             <div
                                 key={month}
                                 onClick={() => handleMonthClick(month)}
-                                className="group cursor-pointer bg-gray-50 hover:bg-white border border-transparent hover:border-blue-200 hover:shadow-lg p-4 rounded-xl flex flex-col items-start gap-3 transition-all duration-200"
+                                className="group cursor-pointer bg-gray-50 hover:bg-white border border-transparent hover:border-green-200 hover:shadow-lg p-4 rounded-xl flex flex-col items-start gap-3 transition-all duration-200"
                             >
-                                <div className="p-3 bg-blue-100 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                                    <FaCalendarAlt className="text-xl" />
+                                <div className="p-3 bg-green-100 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors">
+                                    <FaFileExcel className="text-xl" />
                                 </div>
                                 <div>
                                     <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{selectedYear}</span>
-                                    <span className="block font-bold text-gray-800 text-lg group-hover:text-blue-700 transition-colors">{month}</span>
+                                    <span className="block font-bold text-gray-800 text-lg group-hover:text-green-700 transition-colors">{month}</span>
                                 </div>
                             </div>
                         ))}
